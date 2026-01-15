@@ -2,13 +2,25 @@ package com.svgs;
 
 import static spark.Spark.*;
 
+import com.google.gson.Gson;
+
 public class Main {
+
+    private static Gson gson = new Gson();
 
     public static void main(String[] args) {
         disableCORS();
 
+        post("/newGame", (req, res) -> {
+            //somewthiong something newGame
+            res.status(201);
+            return "";
+        });
+        get("/gameState", (req, res) -> {
+            res.type("application/json");
+            return gson.toJson(something...);
+        });
         
-
     }
 
     public static void disableCORS() {
