@@ -1,10 +1,10 @@
 package com.svgs;
 
 public class Die {
-    private int number;
+    public int number;
 
     public int roll(){
-        number = (int)(Math.random()*5)+1;
+        number = (int)(Math.random()*6)+1;
         return number;
     }
 }
