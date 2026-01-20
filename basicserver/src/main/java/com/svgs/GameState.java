@@ -8,5 +8,6 @@ public class GameState {
     ArrayList<Player> players;
     Die[] dice;
     int rollNumber;
+    boolean gameFull;
 
 }

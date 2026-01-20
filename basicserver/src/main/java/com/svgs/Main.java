@@ -12,13 +12,31 @@ public class Main {
     private static GameState gameState = new GameState();
 
     public static void main(String[] args) {
+        port(1221);
         disableCORS();
         initializeGameState();
 
+        //post endpoints
         post("/newGame", (req, res) -> {
-            res.status(201);
+            if(!gameState.gameFull){
+                if(req.body().equals(gameState.players.get(0).name)){
+                    return "Player of that name is already in game";
+                }else{
+                    res.status(201);
+                    gameState.players.add(new Player(req.body()));
+                    return "Player added";
+                }
+            }else{
+            return "Game is full";
+            }
+        });
+
+        post("/fillBox", (req, res) -> {
+            FillBoxRequest box = gson.fromJson(req.body(), FillBoxRequest.class);
+            
             return "";
         });
+
 
         get("/gameState", (req, res) -> {
             res.type("application/json");
@@ -39,6 +57,7 @@ public class Main {
             gameState.dice[i] = new Die();
             gameState.dice[i].number = i+1;
         }
+        gameState.gameFull = false;
     }
 
     public static void disableCORS() {
