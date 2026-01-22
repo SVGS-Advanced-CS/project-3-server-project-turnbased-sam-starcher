@@ -18,12 +18,16 @@ public class Main {
 
         //post endpoints
         post("/newGame", (req, res) -> {
+            gameState.gameFull = false;
             if(!gameState.gameFull){
-                if(req.body().equals(gameState.players.get(0).name)){
+                if(gameState.players.size() != 0 && req.body().equals(gameState.players.get(0).name)){
                     return "Player of that name is already in game";
                 }else{
                     res.status(201);
                     gameState.players.add(new Player(req.body()));
+                    if(gameState.players.size()==2){
+                        gameState.gameFull = true;
+                    }
                     return "Player added";
                 }
             }else{
@@ -33,7 +37,8 @@ public class Main {
 
         post("/fillBox", (req, res) -> {
             FillBoxRequest box = gson.fromJson(req.body(), FillBoxRequest.class);
-            
+            //String cell = box.boxToFill;
+            //if(gameState.cell)
             return "";
         });
 

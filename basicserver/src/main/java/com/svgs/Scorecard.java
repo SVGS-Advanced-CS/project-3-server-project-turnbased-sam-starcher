@@ -22,5 +22,4 @@ public class Scorecard {
     int upperTotal;
     int lowerTotal;
     int grandTotal;
-
 }
