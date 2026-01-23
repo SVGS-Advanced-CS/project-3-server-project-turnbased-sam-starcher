@@ -18,7 +18,7 @@ public class Main {
 
         //post endpoints
         post("/newGame", (req, res) -> {
-            gameState.gameFull = false;
+            
             if(!gameState.gameFull){
                 if(gameState.players.size() != 0 && req.body().equals(gameState.players.get(0).name)){
                     return "Player of that name is already in game";
@@ -37,8 +37,11 @@ public class Main {
 
         post("/fillBox", (req, res) -> {
             FillBoxRequest box = gson.fromJson(req.body(), FillBoxRequest.class);
-            //String cell = box.boxToFill;
-            //if(gameState.cell)
+            String cell = box.boxToFill;
+            //grr I don't know how to transfer from the fillBoxRequest to the gameState field
+            if(gameState.cell == null){
+                gameState.cell = gameState.calculateScore(cell);
+            }
             return "";
         });
 
