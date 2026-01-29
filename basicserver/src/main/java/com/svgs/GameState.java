@@ -10,7 +10,7 @@ public class GameState {
     int rollNumber;
     boolean gameFull;
 
-    public int calculateCell(String cell){
+    public int calculateCell(Scorecard card, String boxToFill){
         int score = 0;
 
         //surely there's a better way to ace-6..........

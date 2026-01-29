@@ -36,12 +36,19 @@ public class Main {
         });
 
         post("/fillBox", (req, res) -> {
-            FillBoxRequest box = gson.fromJson(req.body(), FillBoxRequest.class);
-            String cell = box.boxToFill;
-            //grr I don't know how to transfer from the fillBoxRequest to the gameState field
-            if(gameState.cell == null){
-                gameState.cell = gameState.calculateScore(cell);
-            }
+            FillBoxRequest fillRequest = gson.fromJson(req.body(), FillBoxRequest.class);
+            String cell = fillRequest.boxToFill;
+            Player currentPlayer = gameState.players.get(gameState.playerTurn);
+
+            //check if box has been filled here?
+            int score = gameState.calculateCell(currentPlayer.scorecard, cell);
+            
+            //apply the score
+            //check if all boxes are full, and if so set playerGameOver true
+            //set roll # to 1 and switch player turns
+
+            //return FillBoxResponse???
+
             return "";
         });
 
@@ -66,6 +73,18 @@ public class Main {
             gameState.dice[i].number = i+1;
         }
         gameState.gameFull = false;
+    }
+
+    //helper for determining playerGameOver
+    //please fix this sam cause why does it want 0 instead of null cause you could have a 0 if you just took the L on one
+    public static boolean allBoxesFilled(Scorecard card){
+        return card.ace != null && card.two != null &&
+        card.three != null && card.four != null &&
+        card.five != null && card.six != null &&
+        card.threeOfAKind != null && card.fourOfAKind != null &&
+        card.fullHouse != null && card.smallStraight != null &&
+        card.largeStraight != null && card.yahtzee != null &&
+        card.chance != null;
     }
 
     public static void disableCORS() {
