@@ -19,36 +19,45 @@ public class Main {
         //post endpoints
         post("/newGame", (req, res) -> {
             
-            if(!gameState.gameFull){
-                if(gameState.players.size() != 0 && req.body().equals(gameState.players.get(0).name)){
-                    return "Player of that name is already in game";
-                }else{
-                    res.status(201);
-                    gameState.players.add(new Player(req.body()));
-                    if(gameState.players.size()==2){
-                        gameState.gameFull = true;
-                    }
-                    return "Player added";
-                }
+            if(gameState.gameFull){
+                return "Game is full.";
+            }
+
+            NewGameRequest request = gson.fromJson(req.body(), NewGameRequest.class);
+
+            if(gameState.players.size() != 0 && request.playerName.equals(gameState.players.get(0).name)){
+                return "Player of that name is already in game";
             }else{
-            return "Game is full";
+                res.status(201);
+                gameState.players.add(new Player(request.playerName));
+                if(gameState.players.size()==2){
+                    gameState.gameFull = true;
+                }
+                return "Player added";
             }
         });
 
         post("/fillBox", (req, res) -> {
-            FillBoxRequest fillRequest = gson.fromJson(req.body(), FillBoxRequest.class);
-            String cell = fillRequest.boxToFill;
+            FillBoxRequest request = gson.fromJson(req.body(), FillBoxRequest.class);
+            String cell = request.boxToFill;
             Player currentPlayer = gameState.players.get(gameState.playerTurn);
 
-            //check if box has been filled here?
             int score = gameState.calculateCell(currentPlayer.scorecard, cell);
-            
-            //apply the score
-            //check if all boxes are full, and if so set playerGameOver true
-            //set roll # to 1 and switch player turns
+            applyScore(score, cell, currentPlayer.scorecard);
 
-            //return FillBoxResponse???
+            currentPlayer.playerGameOver = allBoxesFilled(currentPlayer.scorecard);
+            if(currentPlayer.playerGameOver && gameState.players.get((gameState.playerTurn + 1) % 2).playerGameOver){
+                gameState.gameOver = true;
+            }
 
+            gameState.rollNumber = 1;
+            gameState.playerTurn = (gameState.playerTurn + 1) % 2;
+
+            return "";
+        });
+
+        post("/resetGame", (req, res) -> {
+            initializeGameState();
             return "";
         });
 
@@ -56,6 +65,28 @@ public class Main {
         get("/gameState", (req, res) -> {
             res.type("application/json");
             return gson.toJson(gameState);
+        });
+
+        get("/rollDice", (req,res) -> {
+            res.type("application/json");
+            RollRequest request = gson.fromJson(req.body(), RollRequest.class);
+            int[] toRoll = request.diceToRoll;
+
+            if(gameState.rollNumber == 1){
+                for(int i = 0; i < 5; i++){
+                    gameState.dice[i].roll();
+                }
+                gameState.rollNumber++;
+                return "";
+            }else{
+                for(int index : toRoll){
+                    if(index >= 0 && index < 5){
+                        gameState.dice[index].roll();
+                    }
+                }
+                gameState.rollNumber++;
+                return "";
+            }
         });
         
     }
@@ -76,7 +107,8 @@ public class Main {
     }
 
     //helper for determining playerGameOver
-    //please fix this sam cause why does it want 0 instead of null cause you could have a 0 if you just took the L on one
+    //please fix this sam cause why does it want 0 instead of null 
+    // cause you could have a 0 if you just took the L on one
     public static boolean allBoxesFilled(Scorecard card){
         return card.ace != null && card.two != null &&
         card.three != null && card.four != null &&
@@ -85,6 +117,15 @@ public class Main {
         card.fullHouse != null && card.smallStraight != null &&
         card.largeStraight != null && card.yahtzee != null &&
         card.chance != null;
+    }
+
+    //applies the score, finish later
+    public static void applyScore(int score, String cell, Scorecard card){
+        if(cell.equals("ace")){
+            card.ace = score;
+        }else if(cell.equals("two")){
+            card.two = score;
+        }
     }
 
     public static void disableCORS() {

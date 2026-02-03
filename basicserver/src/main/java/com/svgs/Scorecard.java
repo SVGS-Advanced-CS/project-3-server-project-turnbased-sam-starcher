@@ -2,19 +2,19 @@ package com.svgs;
 
 public class Scorecard {
     //alterable cells 
-    int ace;
-    int two;
-    int three;
-    int four;
-    int five;
-    int six;
-    int threeOfAKind;
-    int fourOfAKind;
-    int fullHouse;
-    int smallStraight;
-    int largeStraight;
+    Integer ace;
+    Integer two;
+    Integer three;
+    Integer four;
+    Integer five;
+    Integer six;
+    Integer threeOfAKind;
+    Integer fourOfAKind;
+    Integer fullHouse;
+    Integer smallStraight;
+    Integer largeStraight;
     int[] yahtzee;
-    int chance;
+    Integer chance;
 
     //cell stuff
     int bonus;
@@ -40,4 +40,5 @@ public class Scorecard {
         lowerTotal = threeOfAKind + fourOfAKind + fullHouse + smallStraight + largeStraight + chance; //+ yahtzee scores I'll figure out at some point
         grandTotal = upperTotal + lowerTotal;
     }
+
 }
