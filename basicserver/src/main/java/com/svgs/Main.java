@@ -106,9 +106,6 @@ public class Main {
         gameState.gameFull = false;
     }
 
-    //helper for determining playerGameOver
-    //please fix this sam cause why does it want 0 instead of null 
-    // cause you could have a 0 if you just took the L on one
     public static boolean allBoxesFilled(Scorecard card){
         return card.ace != null && card.two != null &&
         card.three != null && card.four != null &&

@@ -14,12 +14,14 @@ public class GameState {
     public int calculateCell(Scorecard card, String boxToFill){
         int score = 0;
 
-        //counts up the number Of Numbers and puts it at that # index
+        //counts up the number Of Numbers on the dice roll and puts it at that # index
+        //index 0 really isn't used
         int[] nON = new int[7];
         for(Die die : dice){
             nON[die.number]++;
         }
 
+        //1-6, gets the # of that # and multiples it by that #
         if(boxToFill.equals("ace")){ 
             score = nON[1];
         }
@@ -39,28 +41,17 @@ public class GameState {
             score = nON[6] * 6;
         }
 
+        //if a number has >= 3, then sums all the numbers for the score
+        //doesn't matter which #, as per yahtzee rules
         else if(boxToFill.equals("threeOfAKind")){
             for (int i = 1; i <= 6; i++){
                 if(nON[i] >= 3){
                     score = sumAll();
                 }
             }
-
-            /*int count = 0;
-            for(int i = 0; i < 5; i++){
-                for(int j = i + 1; j < 5; j++){
-                    if(dice[i].number == dice[j].number){
-                        count ++;
-                        if(count == 3){
-                            for(Die single : dice){
-                                score+=single.number;
-                            }
-                        }
-                    }
-                }
-            }*/
         }
 
+        //same logic as threeOfAKind, but with 4
         else if(boxToFill.equals("fourOfAKind")){
             for (int i = 1; i <= 6; i++){
                 if(nON[i] >= 4){
@@ -69,6 +60,8 @@ public class GameState {
             }
         }
 
+        //if there is 3 of one # and 2 of another
+        //if so, score is 25
         else if(boxToFill.equals("fullHouse")){
             boolean three = false;
             boolean two = true;
@@ -85,16 +78,28 @@ public class GameState {
             }
         }
 
+        //there are 3 possibilities, 1234, 2345, and 3456
         else if(boxToFill.equals("smallStraight")){
-            //idrk how to do this efficiently
+            if(
+                (nON[1] > 0 && nON[2] > 0 && nON[3] > 0 && nON[4] > 0) ||
+                (nON[2] > 0 && nON[3] > 0 && nON[4] > 0 && nON[5] > 0) ||
+                (nON[3] > 0 && nON[4] > 0 && nON[5] > 0 && nON[6] > 0)
+            ){
             score = 30;
+            }
         }
 
+        //2 possibilities, 12345 and 23456
         else if(boxToFill.equals("largeStraight")){
-            //haha lol
+            if(
+                (nON[1] > 0 && nON[2] > 0 && nON[3] > 0 && nON[4] > 0 && nON[5] > 0) ||
+                (nON[2] > 0 && nON[3] > 0 && nON[4] > 0 && nON[5] > 0 && nON[6] > 0) 
+            ){
             score = 40;
+            }
         }
 
+        //if all numbers are the same, yahtzee!
         else if (boxToFill.equals("yahtzee")){
             for(int i = 1; i <= 6; i++){
                 if(nON[i] == 5){
@@ -103,6 +108,7 @@ public class GameState {
             }
         }
 
+        //sums all dice
         else if(boxToFill.equals("chance")){
             score = sumAll();
         }
@@ -110,6 +116,7 @@ public class GameState {
         return score;
     }
 
+    //sums all dice, used in threeOfAKind, fourOfAKind, and chance
     private int sumAll(){
         int sum = 0;
         for(Die die : dice){
@@ -117,5 +124,6 @@ public class GameState {
         }
         return sum;
     }
+
 }
 
