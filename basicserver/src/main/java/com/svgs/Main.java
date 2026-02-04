@@ -71,7 +71,11 @@ public class Main {
             res.type("application/json");
             RollRequest request = gson.fromJson(req.body(), RollRequest.class);
             int[] toRoll = request.diceToRoll;
+            Player rollingPlayer = request.player;
 
+            Player currentPlayer = gameState.players.get(gameState.playerTurn);
+
+            if(rollingPlayer.equals(currentPlayer)){
             if(gameState.rollNumber == 1){
                 for(int i = 0; i < 5; i++){
                     gameState.dice[i].roll();
@@ -85,8 +89,9 @@ public class Main {
                     }
                 }
                 gameState.rollNumber++;
-                return "";
             }
+        }
+        return "";
         });
         
     }
