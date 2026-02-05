@@ -39,6 +39,10 @@ public class Main {
 
         //fix so you can only fillBox if you are the player whose turn it is
         post("/fillBox", (req, res) -> {
+            if(gameState.rollNumber == 1){
+                return "You must roll first before filling a box";
+            }
+
             FillBoxRequest request = gson.fromJson(req.body(), FillBoxRequest.class);
             String cell = request.boxToFill;
             String scoringPlayer = request.player;
@@ -61,6 +65,7 @@ public class Main {
 
             return "Successfully applied score";
             }
+
             return "You may only apply a score on your turn";
         });
 
@@ -116,7 +121,7 @@ public class Main {
             gameState.dice[i] = new Die();
             gameState.dice[i].number = i+1;
         }
-        gameState.gameFull = false;
+        gameState.gameFull = false; 
     }
 
     public static boolean allBoxesFilled(Scorecard card){
@@ -154,8 +159,7 @@ public class Main {
         }else if(cell.equals("largeStraight")){
             card.largeStraight = score;
         }else if(cell.equals("yahtzee")){
-            //card.yahtzee = score;
-            //FIX THISSS
+            card.yahtzee = score;
         }else if(cell.equals("chance")){
             card.chance = score;
         }
