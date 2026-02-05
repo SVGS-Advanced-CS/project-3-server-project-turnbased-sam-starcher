@@ -1,6 +1,6 @@
 package com.svgs;
 
 public class RollRequest {
-    Player player;
+    String player;
     int[] diceToRoll;
 }

@@ -37,14 +37,20 @@ public class Main {
             }
         });
 
+        //fix so you can only fillBox if you are the player whose turn it is
         post("/fillBox", (req, res) -> {
             FillBoxRequest request = gson.fromJson(req.body(), FillBoxRequest.class);
             String cell = request.boxToFill;
-            Player currentPlayer = gameState.players.get(gameState.playerTurn);
+            String scoringPlayer = request.player;
 
+            Player currentPlayer = gameState.players.get(gameState.playerTurn);
+            String currentPlayerName = gameState.players.get(gameState.playerTurn).name;
+
+            if(scoringPlayer.equals(currentPlayerName)){
             int score = gameState.calculateCell(currentPlayer.scorecard, cell);
             applyScore(score, cell, currentPlayer.scorecard);
 
+            //checks if boxes are full, maybe playerGameOver, maybe gameOver???
             currentPlayer.playerGameOver = allBoxesFilled(currentPlayer.scorecard);
             if(currentPlayer.playerGameOver && gameState.players.get((gameState.playerTurn + 1) % 2).playerGameOver){
                 gameState.gameOver = true;
@@ -53,7 +59,9 @@ public class Main {
             gameState.rollNumber = 1;
             gameState.playerTurn = (gameState.playerTurn + 1) % 2;
 
-            return "";
+            return "Successfully applied score";
+            }
+            return "You may only apply a score on your turn";
         });
 
         post("/resetGame", (req, res) -> {
@@ -67,13 +75,13 @@ public class Main {
             return gson.toJson(gameState);
         });
 
-        get("/rollDice", (req,res) -> {
+        post("/rollDice", (req,res) -> {
             res.type("application/json");
             RollRequest request = gson.fromJson(req.body(), RollRequest.class);
             int[] toRoll = request.diceToRoll;
-            Player rollingPlayer = request.player;
+            String rollingPlayer = request.player;
 
-            Player currentPlayer = gameState.players.get(gameState.playerTurn);
+            String currentPlayer = gameState.players.get(gameState.playerTurn).name;
 
             if(rollingPlayer.equals(currentPlayer)){
             if(gameState.rollNumber == 1){
@@ -121,12 +129,35 @@ public class Main {
         card.chance != null;
     }
 
-    //applies the score, finish later
+    //applies the score, fix yahtzee mechanic
     public static void applyScore(int score, String cell, Scorecard card){
         if(cell.equals("ace")){
             card.ace = score;
         }else if(cell.equals("two")){
             card.two = score;
+        }else if(cell.equals("three")){
+            card.three = score;
+        }else if(cell.equals("four")){
+            card.four = score;
+        }else if(cell.equals("five")){
+            card.five = score;
+        }else if(cell.equals("six")){
+            card.six = score;
+        }else if(cell.equals("threeOfAKind")){
+            card.threeOfAKind = score;
+        }else if(cell.equals("fourOfAKind")){
+            card.fourOfAKind = score;
+        }else if(cell.equals("fullHouse")){
+            card.fullHouse = score;
+        }else if(cell.equals("smallStraight")){
+            card.smallStraight = score;
+        }else if(cell.equals("largeStraight")){
+            card.largeStraight = score;
+        }else if(cell.equals("yahtzee")){
+            //card.yahtzee = score;
+            //FIX THISSS
+        }else if(cell.equals("chance")){
+            card.chance = score;
         }
     }
 
