@@ -9,6 +9,7 @@ public class GameState {
     Die[] dice;
     int rollNumber;
     boolean gameFull;
+    //add RollRequest here and pass it around 
 
     //TO DO: fix the straights and make this prettier
     public int calculateCell(Scorecard card, String boxToFill){

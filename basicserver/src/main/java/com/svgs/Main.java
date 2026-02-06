@@ -56,6 +56,10 @@ public class Main {
 
             //checks if boxes are full, maybe playerGameOver, maybe gameOver???
             currentPlayer.playerGameOver = allBoxesFilled(currentPlayer.scorecard);
+            if(currentPlayer.playerGameOver){
+                currentPlayer.scorecard.calculateFinals();
+            }
+
             if(currentPlayer.playerGameOver && gameState.players.get((gameState.playerTurn + 1) % 2).playerGameOver){
                 gameState.gameOver = true;
             }
