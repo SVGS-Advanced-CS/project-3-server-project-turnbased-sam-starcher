@@ -9,14 +9,13 @@ public class GameState {
     Die[] dice;
     int rollNumber;
     boolean gameFull;
-    //add RollRequest here and pass it around 
+    RollRequest diceState;
 
-    //TO DO: fix the straights and make this prettier
     public int calculateCell(Scorecard card, String boxToFill){
         int score = 0;
 
         //counts up the number Of Numbers on the dice roll and puts it at that # index
-        //index 0 really isn't used
+        //index 0 isn't used
         int[] nON = new int[7];
         for(Die die : dice){
             nON[die.number]++;

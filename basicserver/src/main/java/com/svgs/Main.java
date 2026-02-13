@@ -79,8 +79,9 @@ public class Main {
         });
 
 
-        get("/gameState", (req, res) -> {
+        post("/gameState", (req, res) -> {
             res.type("application/json");
+            gameState.diceState = gson.fromJson(req.body(), RollRequest.class);
             return gson.toJson(gameState);
         });
 
