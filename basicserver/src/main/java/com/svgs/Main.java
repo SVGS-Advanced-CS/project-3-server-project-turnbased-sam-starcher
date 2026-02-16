@@ -2,6 +2,8 @@ package com.svgs;
 
 import static spark.Spark.*;
 
+import java.util.ArrayList;
+
 import com.google.gson.Gson;
 
 public class Main {
@@ -119,7 +121,7 @@ public class Main {
     public static void initializeGameState(){
         gameState.gameOver = false;
         gameState.playerTurn = 0; //shows index, not player #
-        gameState.players.clear();
+        gameState.players = new ArrayList<>();
         gameState.rollNumber = 1;
         gameState.dice = new Die[5];
         //makes set of dice, with numbers 1-5
