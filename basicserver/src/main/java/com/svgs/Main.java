@@ -2,8 +2,6 @@ package com.svgs;
 
 import static spark.Spark.*;
 
-import java.util.ArrayList;
-
 import com.google.gson.Gson;
 
 public class Main {
@@ -81,8 +79,11 @@ public class Main {
 
         post("/gameState", (req, res) -> {
             res.type("application/json");
+            try{
             gameState.diceState = gson.fromJson(req.body(), RollRequest.class);
-            return gson.toJson(gameState);
+            }catch(Exception e){
+                return e + ": u don't need to send locks rn";
+            }return gson.toJson(gameState);
         });
 
         post("/rollDice", (req,res) -> {
@@ -118,7 +119,7 @@ public class Main {
     public static void initializeGameState(){
         gameState.gameOver = false;
         gameState.playerTurn = 0; //shows index, not player #
-        gameState.players = new ArrayList<>();
+        gameState.players.clear();
         gameState.rollNumber = 1;
         gameState.dice = new Die[5];
         //makes set of dice, with numbers 1-5
